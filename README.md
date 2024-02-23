@@ -1,6 +1,7 @@
 # Proyecto-de-Software-2022 - UNLP
 
 Trabajo realizado para la materia Proyecto de Software en el año 2022.
+
 El sistema fue desarrollado para la gestión de socios de un club deportivo de La Plata.
 
 ## Contenido
