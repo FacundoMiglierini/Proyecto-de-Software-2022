@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/informacion_cuota.css') }}">
+{% endblock %}
+
+{% if has_permission("socio_show") %}
+    {% set active_page = "socios" %}
+    {% block title %}Información del socio{% endblock %}
+
+    {% block content %}
+        <div class="container-fluid py-5 text-center">
+            <h1 class="text-center fw-semibold mb-5">Información del socio</h1>
+            <div class="col d-flex justify-content-center">
+                <div class="card mb-3">
+                    <h5 class="card-header text-center fw-semibold">
+                        Número de socio: #{{socio.id}}
+                    </h5>
+                    <div class="card-body">
+                        <p class="card-text">Nombre: {{socio.nombre}}</p>
+                        <p class="card-text">{{socio.tipo_identificacion}}: {{socio.identificacion}}</p>
+                        {% if socio.email|length %}
+                            <p class="card-text">Email: {{socio.email}}</p>
+                        {% endif %}
+                        {% if socio.username %}
+                            <p class="card-text">Nombre de usuario: {{socio.username}}</p>
+                        {% endif %}
+                        <p class="card-text">Género: {{socio.genero}}</p>
+                        <p class="card-text">Teléfono: {% if socio.telefono|length %}{{socio.telefono}}{% else %}no cargado{% endif %}</p>
+                        <p class="card-text">Domicilio: {{socio.domicilio}}</p>
+                        {% if socio.disciplinas|length %}
+                            <p class="card-text">Disciplinas:</p>
+                            <ul class="list-group">
+                            {% for disciplina in socio.disciplinas %} 
+                                <li class="list-group-item">{{disciplina.nombre_disciplina}}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <hr>
+                        <p class="card-text">Estado: {% if socio.estado %}Inactivo{% else %}Activo{% endif %}</p>
+                        {% if has_permission("payments_show") %}
+                            <div class="my-2">
+                                <a href="{{ url_for('pagos.cuotas_socio', id = socio.id) }}">
+                                    <button type="button" class="btn btn-inscribir">Cuotas</button>
+                                </a>
+                                {% if socio.image %}
+                                    <a class="btn btn-dark" href="{{ url_for('socio.show', socio_id=socio.id) }}">Ver carnet</a>
+                                {% else %}
+                                    <a class="btn btn-dark" href="{{ url_for('socio.upload', socio_id=socio.id) }}">Generar carnet</a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="card-footer text-muted">Fecha de creación: {{socio.fecha_alta|datetime_format('%d-%m-%Y')}}</div>
+                    </div>
+                </div>
+            </div>
+            <a class="btn btn-dark" href="{{ url_for('socio.index_socios') }}">Volver al listado de socios</a>
+        </div>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_alta.css') }}">
+{% endblock %}
+{% from "macros.html" import check_errors %}
+{% if has_permission("socio_udpate") %}
+    {% set active_page = "socios" %}
+    {% block title %} 
+        Editar socio
+    {% endblock %}
+
+
+    {% block content %}
+        <div class="container py-5 form_width">
+            <h1 class="text-center fw-semibold mb-4">Editando socio</h1>
+            <form name="registerForm needs-validation" method="POST">
+                {{ form.csrf_token }}
+                
+                <div class="form-group">
+                    <div class="mb-2">
+                        <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                            <div class="col">
+                                <label for="name" class="form-label">{{ form.name.label }}</label>
+                                {{ form.name(class_="form-control", size=32, value=socio_to_update.nombre) }}
+                                {{ check_errors(form.name) }} 
+                            </div>
+                            <div class="col">
+                                <label for="lastname" class="form-label">{{ form.lastname.label }}</label>
+                                {{ form.lastname(class_="form-control", size=32, value=socio_to_update.apellido) }}
+                                {{ check_errors(form.lastname) }} 
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="mb-2">
+                        <label for="email" class="form-label">{{ form.email.label }}</label>
+                        {{ form.email(class_="form-control", size=32, value=socio_to_update.email) }}
+                        {{ check_errors(form.email) }}
+                    </div>
+                    <div class="mb-2">
+                        <label for="gender" class="form-label">{{ form.gender.label }}</label>
+                        {{ form.gender(class_="form-control") }}
+                        {{ check_errors(form.gender) }}
+                    </div>
+                    <div class="mb-2">
+                        <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                            <div class="col">
+                                <label for="type_ID" class="form-label">{{ form.type_ID.label }}</label>
+                                {{ form.type_ID(class_="form-control") }}
+                                {{ check_errors(form.type_ID) }} 
+                            </div>
+                            <div class="col">
+                                <label for="value_ID" class="form-label">{{ form.value_ID.label }}</label>
+                                {{ form.value_ID(class_="form-control", size=32, value=socio_to_update.identificacion) }}
+                                {{ check_errors(form.value_ID) }} 
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="mb-2">
+                        <div class="rd-grid gap-4 d-md-flex justify-content-md-center mt-auto mb-2">
+                            <div class="col">
+                                <label for="telefono" class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone(class_="form-control", value=socio_to_update.telefono) }}
+                                {{ check_errors(form.phone) }}
+                            </div>
+                            <div class="col mt-2 mt-md-0">
+                                <label for="domicilio" class="form-label">{{ form.address.label }}</label>
+                                {{ form.address(class_="form-control", value=socio_to_update.domicilio) }}
+                                {{ check_errors(form.address) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Estado actual</label>
+                        <select class="form-select" name="estado" {% if not has_permission("socio_switch_state") %} disabled {% endif %}>
+                            <option value="True" {% if socio_to_update.estado_act_block %} selected="selected"{% endif %}>No bloqueado</option>
+                            <option value="False" {% if not socio_to_update.estado_act_block %} selected="selected"{% endif %}>Bloqueado</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="disciplines" class="form-label">{{ form.disciplines.label }}</label>
+                        {{ form.disciplines(class="form-control") }}
+                        {{ check_errors(form.disciplines) }}
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                    
+                    <button type="submit" class="btn btn-dark">
+                        {% block button_text %}Editar socio{% endblock %}
+                    </button>
+                    <a class="btn btn-dark" href="{{ url_for('socio.index_socios') }}">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends "socios/index.html" %}
+{% if has_permission("socio_show") %}
+    {% block title %}Resultados de búsqueda{% endblock %}
+    {% block header_title %}
+        <h1 class="text-center fw-semibold mb-4">Resultado de búsqueda</h1>
+    {% endblock %}
+    {% block button_bottom %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto pt-2">
+            <a href="{{ url_for('socio.index_socios') }}" class="btn btn-dark">Retornar a listado general</a>
+            </a>
+        </div>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,16 @@
+div.card {
+    color: black;
+}
+
+@media screen and (max-width: 768px) {
+    .card {
+        max-width: 85%;
+    }
+    
+}
+
+@media screen and (min-width: 769px) {
+    .card{
+        max-width: 540px;
+    }
+}

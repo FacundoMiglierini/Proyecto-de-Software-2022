@@ -1,0 +1,25 @@
+{% block paginacion %}
+    <div class="paginacion align-bottom">
+        <nav aria-label="...">
+            <ul class="pagination flex-wrap"  style="margin-bottom: 0px;">
+                <li class="page-item {% if not pages.has_prev %} disabled {% endif %}">
+                <a class="full-text page-link" href="./{{added}}?page={{ pages.prev_num }}">Anterior</a>
+                <a class="short-text page-link" href="./{{added}}?page={{ pages.prev_num }}">&lt;</a>
+                </li>
+                {% for page in pages.iter_pages() %}
+                    {% if page == pages.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="./{{added}}?page={{ page }}">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %} 
+                <li class="page-item {% if not pages.has_next %} disabled {% endif %}">
+                <a class="full-text page-link" href="./{{added}}?page={{ pages.next_num }}">Siguiente</a>
+                <a class="short-text page-link" href="./{{added}}?page={{ pages.prev_num }}">&gt;</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+{% endblock %}

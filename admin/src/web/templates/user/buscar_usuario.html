@@ -1,0 +1,11 @@
+{% extends "user/base_listado_usuarios.html" %}
+
+{% if has_permission("user_show") %}
+    {% block title %}Búsqueda de usuarios{% endblock %}
+    {% block header_title %}<h1 class="text-center fw-semibold mb-4">Resultados de búsqueda</h1>{% endblock %}
+    {% block button_bottom %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto">
+                <a class="btn btn-dark" href="{{ url_for('user.index_users') }}">Volver al listado general de usuarios</a>
+        </div>
+    {% endblock %}
+{% endif %}

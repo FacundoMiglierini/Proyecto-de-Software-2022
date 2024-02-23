@@ -1,0 +1,6 @@
+{% extends "business/inscripcion_socios.html" %}
+{% if has_permission("socio_show") %}
+    {% block button_bottom %}
+        <a href="{{ url_for('disciplinas.inscripcion_socio', id=id) }}" class="btn btn-dark">Atrás</a>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_alta.css') }}">
+    <script>
+        function outputUpdate(pag) {
+            document.querySelector('#selected-pag').value = pag;
+        }
+        function outputUpdateCuotas(cant) {
+            document.querySelector('#selected-cant').value = cant;
+        }
+    </script>
+{% endblock %}
+
+{% block title %} 
+    Configuración del sistema
+{% endblock %}
+
+{% from "macros.html" import check_errors %}
+
+{% block content %}
+    <div class="container py-5 form_width">
+        <h1 class="text-center fw-semibold mb-4">Configuración</h1>
+        <form name="registerForm needs-validation" method="POST">
+            {{ form.csrf_token }}
+            
+            <div class="form-group">
+                <div class="mb-2">
+                    <label for="cant" class="form-label">{{ form.cant.label }}: 
+                        <output for="pag" id="selected-pag">{{ form.cant.default }}</output>
+                    </label>
+                    {{ form.cant(class_="form-range", value=form.cant.default, oninput="outputUpdate(value)") }}
+                    {{ check_errors(form.cant) }}
+                </div>
+                <div class="mb-2">
+                    <label for="criterio" class="form-label">{{ form.criterio.label }}</label>
+                    {{ form.criterio(class="form-control") }}
+                    {{ check_errors(form.criterio) }}
+                </div>
+                <div class="mb-2">
+                    <label for="pagos" class="form-label">{{ form.pagos.label }}</label>
+                    {{ form.pagos(class="form-control") }}
+                    {{ check_errors(form.pagos) }}
+                </div>
+                <div class="mb-2">
+                    <label for="cant_pagos_permitidos" class="form-label">{{ form.cant_pagos_permitidos.label }}: 
+                        <output for="cant" id="selected-cant">{{ form.cant_pagos_permitidos.default }}</output>
+                    </label>
+                    {{ form.cant_pagos_permitidos(class_="form-range", value=form.cant_pagos_permitidos.default, oninput="outputUpdateCuotas(value)") }}
+                    {{ check_errors(form.cant_pagos_permitidos) }}
+                </div>
+                <div class="mb-2">
+                    <label for="email" class="form-label">{{ form.email.label }}</label>
+                    {{ form.email(class="form-control", value=config.email) }}
+                    {{ check_errors(form.email) }}
+                </div>
+                <div class="mb-2">
+                    <label for="phone" class="form-label">{{ form.phone.label }}</label>
+                    {{ form.phone(class_="form-control", size=32, value=config.phone) }}
+                    {{ check_errors(form.phone) }}
+                </div>
+                <div class="mb-2">
+                    <label for="recibo_txt" class="form-label">{{ form.recibo_txt.label }}</label>
+                    {{ form.recibo_txt(class="form-control", value=config.recibo_txt) }}
+                    {{ check_errors(form.recibo_txt) }}
+                </div>
+                <div class="mb-2">
+                    <div class="rd-grid gap-4 d-md-flex justify-content-md-center mt-auto mb-2">
+                        <div class="col">
+                            <label for="cuota_base" class="form-label">{{ form.cuota_base.label }}</label>
+                            {{ form.cuota_base(class_="form-control", size=32, value=config.cuota_base) }}
+                            {{ check_errors(form.cuota_base) }}
+                        </div>
+                        <div class="col mt-2 mt-md-0">
+                            <label for="recargo" class="form-label">{{ form.recargo.label }}</label>
+                            {{ form.recargo(class_="form-control", size=32, value=config.recargo) }}
+                            {{ check_errors(form.recargo) }}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                <button type="submit" class="btn btn-dark">Guardar configuración</button>
+                <a class="btn btn-dark" href="{{ url_for('user.index_users') }}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

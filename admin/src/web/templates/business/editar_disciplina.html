@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_alta.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+    <style>
+        @media only screen and (max-width: 767px),
+        (min-device-width: 768px) and (max-device-width: 995px)  {
+                /*
+            Label the data
+            */
+            td:nth-of-type(1):before { content: "Nombre"; }
+            td:nth-of-type(2):before { content: "Opciones"; }
+        }
+
+        #mHeader{
+            padding-bottom: 70px;
+        }
+    </style>
+{% endblock %}
+{% from "macros.html" import check_errors %}
+{% set active_page = "disciplinas" %}
+
+{% if has_permission("discipline_update") %}
+
+    {% block title %} 
+        Editar Disciplina
+    {% endblock %}
+
+    {% block content %}
+      <div class="container py-5 form_width">
+        <h1 class="text-center fw-semibold mb-4">Editar disciplina</h1>
+        <form name="altaDisciplina needs-validation" method="POST">
+          {{ form.csrf_token }}
+            
+          <div class="form-group">
+                <div class="mb-2">
+                    <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                        <div class="col">
+                            <label for="nombre" class="form-label">{{ form.nombre_disciplina.label }}</label>
+                            {{ form.nombre_disciplina(class_="form-control", size=32) }}
+                            {{ check_errors(form.nombre_disciplina) }} 
+                        </div>
+                        <div class="col">
+                            <label for="costo" class="form-label">{{ form.costo.label }}</label>
+                            {{ form.costo(class_="form-control", size=32) }}
+                            {{ check_errors(form.costo) }} 
+                        </div>
+                    </div> 
+                </div>
+                <br>
+                <div class="mb-2">
+                  
+                  <div class="col">
+                    <label for="detalle" class="form-label">{{ form.detalle.label }}</label>
+                    {{ form.detalle(class_="form-control", size=32) }}
+                    {{ check_errors(form.detalle) }} 
+                  </div>
+                  <br>
+                  {{form.habilitada}}
+                  <label for="detalle" class="form-label">{{ form.habilitada.label }}</label>
+                  
+                </div>
+                <br>
+                <div class="table table-dark rounded-3 overflow-hidden">
+                  <h4 class="py-1">Categorías</h4>
+                  <table class="">
+                      <thead>
+                          <tr>
+                              <th style="width: 50%;">Nombre</th>
+                              <th>Opciones</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in categorias %} 
+                          {% for categoria in item.categorias %}
+                            <tr>
+                              <td>{{categoria.descripcion}}</td>
+                              <td> 
+                                <a class="btn btn-sm btn-borrar" href="{{ url_for('disciplinas.desvincular_categoria',id = disciplina_to_update.id, idc = categoria.id) }}">Eliminar</a>
+                              </td>
+                            </tr>  
+                          {% endfor %}
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                  <a class="btn btn-dark" href="{{ url_for('disciplinas.alta_categoria',id=disciplina_to_update.id)}}">Agregar Categoria</a>
+                </div>
+                <h4 class="py-1">Instructores</h4>
+                <div class="table table-dark rounded-3 overflow-hidden">
+                  <table class="">
+                      <thead>
+                        <tr>
+                          <th style="width: 50%">Nombre</th>
+                          <th>Opciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in instructores %}
+                          {% for instructor in item.instructores %}
+                          <tr>
+                            <td>{{instructor.nombre_instructor}} {{instructor.apellido_instructor}}</td>
+                            <td>
+                              <a class="btn btn-sm btn-borrar" href="{{ url_for('disciplinas.desvincular_instructor',id = disciplina_to_update.id, idi = instructor.id) }}">Eliminar</a>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                <a class="btn btn-dark" href="{{ url_for('disciplinas.alta_instructor',id=disciplina_to_update.id)}}">Agregar Instructor</a>
+              </div>
+
+              <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto pt-4">
+                <a class="btn btn-dark" href="{{ url_for('disciplinas.disciplinas_listado')}}">Volver a disciplinas</a>
+                <button type="submit" class="btn btn-dark">Actualizar</button>
+              </div> 
+            </div>
+               
+        </form>
+      </div>
+    {% endblock %}
+{% endif %}

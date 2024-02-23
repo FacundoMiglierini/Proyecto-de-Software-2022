@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block head %} 
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/land_page.css') }}">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block title %}Bienvenido{% endblock %}
+    
+{% block body %} 
+  <body class="text-center form-signin w-100 m-auto">
+    <div class="row">
+      <form action="{{ url_for('auth.authenticate')}}" method="POST" class="col-12">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <img class="mb-4" src="{{ url_for('static', filename='images/logo.png') }}" alt="LOGO DEL CLUB" width="72" height="72">
+        <h1 class="h3 mb-3 fw-semibold">Club deportivo Villa Elisa</h1>
+
+        <div class="form-floating">
+          <input type="username" name="username" id="floatingInput" class="form-control" placeholder="Nombre de usuario" required>
+          <label for="floatingInput">Nombre de usuario</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Contraseña" required>
+          <label for="floatingPassword" >Contraseña</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-light" type="submit">Iniciar sesión</button>
+        <p class="mt-5 mb-3 text-muted">&copy; Proyecto de software - Grupo 19</p>
+      </form>
+      <div class="mb-4 col-12">
+        {% with messages = get_flashed_messages(with_categories=true) %} 
+            {% if messages %} 
+                {% for category, message in messages %} 
+                    <p class="flash {{category}}">{{ message }}</p>
+                {% endfor %} 
+            {% endif %} 
+        {% endwith %}
+      </div>
+    </div>
+  </body>
+{% block footer %}
+
+{% endblock %}
+{% endblock %}

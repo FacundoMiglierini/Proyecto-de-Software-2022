@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+
+    <style>
+        @media only screen and (max-width: 767px),
+        (min-device-width: 768px) and (max-device-width: 995px)  {
+                /*
+            Label the data
+            */
+            td:nth-of-type(1):before { content: "Nro de socio"; }
+            td:nth-of-type(2):before { content: "Nombre"; }
+            td:nth-of-type(3):before { content: "Tipo de documento"; }
+            td:nth-of-type(4):before { content: "Documento"; }
+            td:nth-of-type(5):before { content: "Estado"; }
+            td:nth-of-type(6):before { content: "Pagos"; }
+            td:nth-of-type(7):before { content: "Opciones"; }
+        }
+    </style>
+{% endblock %}
+{% set active_page = "disciplinas" %}
+
+{% if has_permission("discipline_update") and has_permission("socio_index") %}
+    {% block title %}Inscripción de socio{% endblock %}
+
+    {% block content %}
+        <div class="container py-5 justify-content-center"> 
+            <h1 class="text-center fw-semibold mb-4">Inscripción de socio</h1>
+            {% if has_permission("socio_show") %}
+                <form method="POST" action="{{ url_for('disciplinas.search',id=id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center py-2">
+                        <div class="dropdown">
+                            <select class="form-select" id="select" name="estado">
+                                <option value="todos" {% if s=="todos" %} selected="selected"{% endif %}>Todos</option>
+                                <option value="False" {% if s=="False" %} selected="selected"{% endif %}>Activos</option>
+                                <option value="True" {% if s=="True" %} selected="selected"{% endif %}>Inactivos</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" placeholder="López" name="searched" {% if n %} value="{{n}}" {% endif %}>
+                                <button type="submit" class="btn btn-dark">Buscar</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+            <div class="table table-dark">
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th># Socio</th>
+                            <th>Nombre</th>
+                            <th>Tipo de documento</th>
+                            <th>Documento</th>
+                            <th>Estado</th> 
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for socio in pages.items %} 
+                            <tr>
+                                <td>{{ socio.id }}</td>
+                                <td>{{socio.nombre}} {{socio.apellido}}</td>
+                                <td>{{socio.tipo_identificacion}}</td>
+                                <td>{{socio.identificacion}}</td>
+                                <td>{% if socio.estado == "Impaga" %}Inactivo{% else %}Activo{% endif %}</td>
+                                <td>
+                                    <a href="{{ url_for('disciplinas.confirmar_inscripcion', id=id,ids=socio.id) }}">
+                                        <button type="button" class="btn btn-inscribir {% if socio.estado == "Impaga" %}disabled{% endif %}">Asociar</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endblock %}
+    {% block buttons %}
+        <div class="d-grid gap-4 d-md-flex align-items-center justify-content-md-between mt-auto pt-4 pb-2">
+            {% include "paginacion.html" %}
+            {% block button_bottom %}
+                <a href="{{ url_for('disciplinas.disciplinas_listado') }}" class="btn btn-dark">Atrás</a>
+            {% endblock %}
+        </div>
+    {% endblock %} 
+{% endif %}

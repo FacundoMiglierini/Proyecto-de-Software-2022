@@ -1,0 +1,12 @@
+{% extends "/cuotas/searcher.html" %}
+{% if has_permission("payments_show") %}
+    {% block title %}Resultados de búsqueda{% endblock %}
+    {% block header_title %}
+        <h1 class="text-center fw-semibold mb-4">Resultados de búsqueda</h1>
+    {% endblock %}
+    {% block button_bottom %} 
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto pt-2">
+            <a class="btn btn-dark" href="{{ url_for('pagos.searcher') }}">Volver al listado general de cuotas</a>
+        </div>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,37 @@
+{% if has_permission("payments_show") %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carnet de socio</title>
+</head>
+
+
+<body>
+    <div class="container">
+        <div class="panel panel-default"> 
+            <h3 class="panel-title">Club Deportivo de Villa Elisa</h3>
+            <hr>
+            <div class="col-4"> 
+                <img class="profile" src="data:{{image.mimetype}};base64,{{image.data.decode()}}">
+                <span class="mensaje_recibo">Estado: {% if carnet.estado %}Inactivo{% else %}Activo{% endif %}</span>
+            </div>
+            <div class="container">
+                <div class="col-8">
+                    <div class="panel-body">
+                        <h4 class="panel-nro"><strong>Socio: #{{carnet.id}}</strong></h4>
+                        <p><strong>Socio:</strong> {{carnet.nombre}}</p>
+                        <p><strong>{{carnet.tipo_identificacion}}:</strong> {{ carnet.identificacion }}</p>
+                        <p><strong>Fecha alta:</strong> {{ carnet.fecha_alta }}</p>
+                        <hr>
+                        <div style="text-align: center">
+                            <img src="data:;base64,{{qr.decode()}}" class="qr">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endif %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_alta.css') }}">
+{% endblock %}
+{% set active_page = "disciplinas" %}
+{% from "macros.html" import check_errors %}
+
+{% if has_permission("discipline_update") %}
+  {% block title %} 
+      Alta de Categoria
+  {% endblock %}
+
+  {% block content %}
+    <div class="container py-5 form_width">
+      <h1 class="text-center fw-semibold mb-4">Registrar categoria</h1>
+      <form name="altaCategoria needs-validation" method="POST">
+          {{ form.csrf_token }}
+              <div class="mb-2">
+                <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                  <div class="col">
+                    <label for="nombre categoria" class="form-label">{{ form.descripcion.label }}</label>
+                    {{ form.descripcion(class_="form-control", size=32) }}
+                        {{ check_errors(form.descripcion) }}
+                  </div>
+                </div>
+              </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+          <a class="btn btn-dark" href="{{ url_for('disciplinas.editar_disciplina',id=id)}}">Volver a edición de disciplinas</a>
+          <button type="submit" class="btn btn-dark">Dar de alta</button>
+      </form>
+  </div>   
+  {% endblock %}
+{% endif %}

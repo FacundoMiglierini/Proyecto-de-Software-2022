@@ -1,0 +1,25 @@
+table tr td:last-child {
+    white-space: nowrap;
+    width: 1px;
+}
+
+table tr td:last-child {
+    text-align: right;
+}
+
+div.card {
+    color: black;
+}
+
+@media screen and (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+    
+}
+
+@media screen and (min-width: 769px) {
+    .card{
+        width: 50%;
+    }
+}

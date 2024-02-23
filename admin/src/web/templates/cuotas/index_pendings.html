@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+    <style>
+        @media only screen and (max-width: 767px),
+        (min-device-width: 768px) and (max-device-width: 995px)  {
+                /*
+            Label the data
+            */
+            td:nth-of-type(1):before { content: "Socio"; }
+            td:nth-of-type(2):before { content: "Mes a abonar"; }
+            td:nth-of-type(3):before { content: "Opciones"; }
+        }
+    </style>
+{% endblock %}
+{% set active_page = "pagos" %}
+
+{% if has_permission("payments_index") %}
+    {% block title %}Cuotas pendientes{% endblock %}
+
+    {% block content %}
+        <div class="container pt-5 justify-content-center">
+            {% block header_title %}<h1 class="text-center fw-semibold mb-4">Cuotas pendientes</h1>{% endblock %}
+            {% if exists %}
+                <div class="table table-dark">
+                    <table class="">
+                        <thead>
+                            <tr>
+                                <th>Socio</th>
+                                <th>Mes a abonar</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cuota in pages.items %} 
+                                <tr>
+                                    <td>{{cuota.socio_id}}</td>
+                                    <td>{{cuota.created_at|datetime_format('%m-%Y')}}</td>
+                                    <!--Más info-->
+                                    <td>
+                                        <div class="d-grid gap-2 d-md-flex justify-content-lg-center justify-content-start mt-auto">
+                                            {% if has_permission("payments_show") %}
+                                                <a class="btn btn-sm btn-inscribir" href="{{ url_for('pagos.show_pending_payment', id = cuota.id) }}">
+                                                    Comprobante
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <h1>NO HAY CUOTAS PENDIENTES</h1>
+            {% endif %}
+        </div>        
+    {% endblock %}
+    {% block buttons %}
+        <div class="d-grid gap-4 d-md-flex justify-content-md-between mt-auto pt-4 pb-2">
+            {% include "paginacion.html" %}
+        </div>
+        {% block button_bottom %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto pt-2 pb-2">
+                <a href="{{ url_for('pagos.searcher') }}" class="btn btn-dark">Volver al listado de cuotas</a> 
+            </div>
+        {% endblock %}
+    {% endblock %}
+{% endif %}

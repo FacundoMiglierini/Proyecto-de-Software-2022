@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_alta.css') }}">
+{% endblock %}
+{% set active_page = "disciplinas" %}
+
+{% if has_permission("discipline_new") %}
+  {% block title %} 
+      Alta de Disciplinas
+  {% endblock %}
+
+  {% from "macros.html" import check_errors %}
+  {% block content %}
+    <div class="container py-5 form_width">
+      <h1 class="text-center fw-semibold mb-4">Cargar disciplina</h1>
+      <form name="altaDisciplina needs-validation" method="POST">
+          {{ form1.csrf_token }}
+          
+          <div class="form-group">
+              <div class="mb-2">
+                  <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                      <div class="col">
+                          <label for="nombre" class="form-label">{{ form1.nombre_disciplina.label }}</label>
+                          {{ form1.nombre_disciplina(class_="form-control", size=32) }}
+                          {{ check_errors(form1.nombre_disciplina) }} 
+                      </div>
+                      <div class="col">
+                          <label for="costo" class="form-label">{{ form1.costo.label }}</label>
+                          {{ form1.costo(class_="form-control", size=32) }}
+                          {{ check_errors(form1.costo) }} 
+                      </div>
+                  </div> 
+                  <br> 
+                      <div class="col">
+                        <label for="detalle" class="form-label">{{ form1.detalle.label }}</label>
+                        {{ form1.detalle(class_="form-control", size=32) }}
+                        {{ check_errors(form1.detalle) }} 
+                      </div>
+                      <br>
+                      {{form1.habilitada}}
+                      <label for="detalle" class="form-label">{{ form1.habilitada.label }}</label>
+              </div>
+              {{ form2.csrf_token }}
+              <div class="mb-2">
+                <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                  <div class="col">
+                    <label for="descripcion" class="form-label">{{ form2.descripcion.label }}</label>
+                        {{ form2.descripcion(class_="form-control", size=32) }}
+                        {{ check_errors(form2.descripcion) }}
+                  </div>
+                </div>
+              </div>
+              <br>
+              {{ form3.csrf_token }}
+              <div class="mb-2">
+                <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                  <div class="col">
+                    <label for="nombre instructor" class="form-label">{{ form3.nombre_instructor.label }}</label>
+                    {{ form3.nombre_instructor(class_="form-control", size=32) }}
+                        {{ check_errors(form3.nombre_instructor) }}
+                  </div>
+                  <div class="col">
+                    <label for="apellido instructor" class="form-label">{{ form3.apellido_instructor.label }}</label>
+                    {{ form3.apellido_instructor(class_="form-control", size=32) }}
+                        {{ check_errors(form3.apellido_instructor) }}
+                  </div>
+                </div>
+              </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+            <button type="submit" class="btn btn-dark">Registrar</button>
+            <a class="btn btn-dark" href="{{ url_for('disciplinas.disciplinas_listado') }}">Cancelar</a>
+          </div>        
+      </form>
+    </div>
+  {% endblock %}
+{% endif %}

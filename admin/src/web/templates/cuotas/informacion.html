@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/informacion_cuota.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+{% endblock %}
+
+{% set active_page = "pagos" %}
+{% if has_permission("payments_show") %}
+    {% block title %}Comprobante de pago{% endblock %}
+
+    {% block content %}
+        <div class="container-fluid py-5">
+            <h1 class="text-center fw-semibold mb-5">Información de la cuota</h1>
+            <div class="col d-flex justify-content-center">
+                <div class="card mb-3"> 
+                        <h5 class="card-header text-center fw-semibold">Número de cuota: #{{informacion.id}}</h5>
+                        <div class="card-body">
+                          <p class="card-text">Socio: {{informacion.nombre}}</p> 
+                          <p class="card-text">Nro. de socio: {{ informacion.socio }}</p>
+                          <p class="card-text">Fecha de creación: {{ informacion.fecha_creacion }}</p>
+                          {% if informacion.fecha_pago|length %}
+                              <p class="card-text">Fecha de pago: {{ informacion.fecha_pago}}</p>
+                          {% else %}
+                              <p class="card-text">Estado: impaga</p>
+                          {% endif %}
+                          <p class="card-text">La cuota cubre los siguientes gastos:</p>
+                              <table class="table" style="margin-right: 0px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Motivo</th>
+                                            <th>Costo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Valor de cuota base</td>
+                                            <td>{{ informacion.detalle.base }}</td>
+                                        </tr>
+                                        <tr>
+                                            {% if informacion.detalle.recargo != 0 %}
+                                              <td>Recargo por deudas</td>
+                                              <td>{{ informacion.detalle.recargo }}</td>
+                                            {% endif %}
+                                        </tr>
+                                        {% for key, value in informacion.detalle.disciplinas.items() %}
+                                            <tr>
+                                                <td>{{ key }}</td>
+                                                <td>{{ value}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                              </table>
+                          <hr>
+                          <p class="card-text fw-semibold">Monto total: ${{ informacion.monto}}</p>
+                          <div class="card-footer text-muted">Última modificación: {{ informacion.fecha_mod}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                <!-- Button trigger modal -->
+                {% if informacion.estado == 'Impaga' %}
+                    {% if has_permission("payments_import") %}
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#staticBackdrop--{{ informacion.id }}">
+                            Pagar
+                        </button>
+                    {% endif %}
+                {% elif informacion.estado == 'Pagada' %}
+                    {% if has_permission("payments_show") %}
+                        <a class="btn btn-dark" href="{{ url_for('pagos.show_comprobante', id_cuota = informacion.id) }}">
+                            Ver comprobante
+                        </a>
+                    {% endif %}
+                {% endif %}
+                
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop--{{ informacion.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Confirmación de pago</h1>
+                            </div>
+                            <div class="modal-body"> 
+                                <p>¿Está segur@ que desea efectuar el pago?</p>
+                            </div>
+                        
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <a href="{{ url_for('pagos.pagar_cuota', id_cuota = informacion.id) }}">
+                                    <button type="button" class="btn btn-primary">Confirmar</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn btn-dark" href="{{ url_for('pagos.searcher') }}">Volver al listado de cuotas</a>
+            </div>
+        </div>
+    {% endblock %}
+{% endif %}

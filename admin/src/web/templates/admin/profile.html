@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_alta.css') }}">
+{% endblock %}
+
+{% block title %} 
+    Perfil de administrador
+{% endblock %}
+
+{% from "macros.html" import check_errors %}
+
+{% block content %}
+    <div class="container py-5 form_width">
+        <h1 class="text-center fw-semibold mb-4">Perfil de administrador</h1>
+        <form name="registerForm needs-validation" method="POST">
+            {{ form.csrf_token }}
+            
+            <div class="form-group">
+                <fieldset disabled>
+                    <div class="mb-2">
+                        <label for="disabledTextInput" class="form-label">Nombre de usuario</label>
+                        <input type="text" id="disabledTextInput" class="form-control" placeholder="{{admin.username}}"> 
+                    </div>
+                </fieldset>
+                <div class="mb-2">
+                    <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center">
+                        <div class="col">
+                            <label for="name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name(class_="form-control", size=32, value=admin.nombre) }}
+                            {{ check_errors(form.name) }} 
+                        </div>
+                        <div class="col">
+                            <label for="lastname" class="form-label">{{ form.lastname.label }}</label>
+                            {{ form.lastname(class_="form-control", size=32, value=admin.apellido) }}
+                            {{ check_errors(form.lastname) }} 
+                        </div>
+                    </div>  
+                </div>
+                <div class="mb-2">
+                    <label for="email" class="form-label">{{ form.email.label }}</label>
+                    {{ form.email(class_="form-control", size=32) }}
+                    {{ check_errors(form.email) }} 
+                </div>
+                <div class="mb-3">
+                    <label for="roles" class="form-label">{{ form.roles.label }}</label>
+                    {{ form.roles(class_="form-control", size=32) }}
+                    {{ check_errors(form.roles) }} 
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                
+                <button type="submit" class="btn btn-dark">
+                    {% block button_text %}Editar{% endblock %}
+                </button>
+                <a class="btn btn-dark" href="{{ url_for('user.index_users') }}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+
+    <style>
+        @media only screen and (max-width: 767px),
+        (min-device-width: 768px) and (max-device-width: 995px)  {
+                /*
+            Label the data
+            */
+            td:nth-of-type(1):before { content: "Nro de usuario"; }
+            td:nth-of-type(2):before { content: "Nombre"; }
+            td:nth-of-type(3):before { content: "Apellido"; }
+            td:nth-of-type(4):before { content: "Nombre de usuario"; }
+            td:nth-of-type(5):before { content: "Email"; }
+            td:nth-of-type(6):before { content: "Estado"; }
+            td:nth-of-type(7):before { content: "Opciones"; }
+        }
+    </style>
+{% endblock %}
+{% set active_page = "users" %}
+{% if has_permission("user_index") %}
+    {% block title %}Listado de usuarios{% endblock %}
+    {% block content %}
+        <div class="container pt-5 justify-content-center"> 
+            {% block header_title %}<h1 class="text-center fw-semibold mb-4">Listado de usuarios</h1>{% endblock %}
+            {% if has_permission("user_show") %}
+                <form method="POST" action="{{ url_for('user.search') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="d-grid gap-2 gap-md-4 d-md-flex justify-content-md-center py-2">
+                        <div class="dropdown">
+                            <select class="form-select" id="select" name="estado">
+                                <option value="todos" {% if s and s=="todos" %} selected="selected"{% endif %}>Todos</option>
+                                <option value="True" {% if s and s=="True" %} selected="selected"{% endif %}>Activos</option>
+                                <option value="False" {% if s and s=="False" %} selected="selected"{% endif %}>Bloqueados</option>
+                            </select>
+                          </div>
+                        <!--Buscar usuario-->
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" placeholder="ejemplo@ejemplo.com" name="searched" {% if n %} value="{{n}}" {% endif %}>
+                                <button type="submit" class="btn btn-dark">Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+            
+            <div class="table table-dark">
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th># Usuario</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Nombre de usuario</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in pages.items %}
+
+                            <!--Listado de usuarios-->
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.nombre }}</td>
+                                <td>{{ user.apellido }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{% if user.estado %}Activo{% else %}Bloqueado{% endif %}</td>
+
+                                <td>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-lg-center justify-content-start mt-auto">
+                                        {% if has_permission("user_update") %}
+                                            <a href="{{ url_for('user.edit_user', id = user.id) }}">
+                                                <button type="button" class="btn btn-sm btn-especial">Editar</button>
+                                            </a>
+                                        {% endif %}
+                                        {% if has_permission("user_destroy") %}
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-sm btn-borrar" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{user.id}}">
+                                                Eliminar
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="staticBackdrop-{{user.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h1 class="modal-title fs-5">Confirmación de eliminación</h1>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>¿Está segur@ que desea eliminar al usuario {{user.id}}?</p>
+                                                </div>
+                                            
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <a href="{{ url_for('user.delete_user', id = user.id) }}">
+                                                        <button type="button" class="btn btn-borrar">Eliminar</button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endblock %}
+    {% block buttons %} 
+            <div class="d-grid gap-4 d-md-flex align-items-center justify-content-md-between mt-auto pt-4 pb-2">
+                <!--Paginación-->
+                <div class="d-md-flex justify-content-md-start">
+                    {% include "paginacion.html" %}
+                </div>
+                <!--Agregar usuario-->
+                {% if has_permission("user_new") %}
+                    <a class="btn btn-dark" href="{{ url_for('user.create_user') }}">Agregar usuario</a>
+                {% endif %}
+            </div>
+            {% block button_bottom %}{% endblock %}
+    {% endblock %}
+{% endif %}

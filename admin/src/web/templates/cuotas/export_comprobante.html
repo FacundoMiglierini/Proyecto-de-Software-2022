@@ -1,0 +1,68 @@
+{% if has_permission("payments_show") %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Comprobante de pago</title>
+</head>
+
+
+<body>
+    <div class="container">
+        <div class="panel panel-default"> 
+            <div class="col-4"> 
+                <img src="data:;base64,{{ get_image_file_as_base64_data() }}">
+                {% if comprobante.recibo_txt %}
+                    <span class="mensaje_recibo">"{{comprobante.recibo_txt}}"</span>
+                {% endif %}
+            </div>
+            <div class="container">
+              <div class="col-8">
+                <div class="panel-body">
+                    <h4 class="panel-title"><strong>Número de cuota: #{{comprobante.id}}</strong></h4>
+                    <p><strong>Socio:</strong> {{comprobante.nombre}}</p> 
+                    <p><strong>Nro. de socio:</strong> {{ comprobante.socio }}</p>
+                    <p><strong>Fecha de creación:</strong> {{ comprobante.fecha_creacion }}</p>
+                    {% if comprobante.fecha_pago|length %}
+                        <p><strong>Fecha de pago:</strong> {{ comprobante.fecha_pago}}</p>
+                    {% else %}
+                        <p><strong>Estado:</strong> impaga</p>
+                    {% endif %}
+                    <p>La cuota cubre los siguientes gastos:</p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Motivo</th>
+                                <th>Costo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Valor de cuota base</td>
+                                <td>{{ comprobante.detalle.base }}</td>
+                            </tr>
+                            <tr>
+                                {% if comprobante.detalle.recargo != 0 %}
+                                    <td>Recargo por deudas</td>
+                                    <td>{{ comprobante.detalle.recargo }}</td>
+                                {% endif %}
+                            </tr>
+                            {% for key, value in comprobante.detalle.disciplinas.items() %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ value}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr>
+                    <p><strong>Monto total:</strong> ${{ comprobante.monto}}</p>
+                    <div class="panel-footer text-muted"><strong>Última modificación:</strong> {{ comprobante.fecha_mod}}</div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endif %}

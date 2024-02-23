@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+
+    <style>
+        @media only screen and (max-width: 767px),
+        (min-device-width: 768px) and (max-device-width: 995px)  {
+                /*
+            Label the data
+            */
+            td:nth-of-type(1):before { content: "#"; }
+            td:nth-of-type(2):before { content: "Nombre"; }
+            td:nth-of-type(3):before { content: "Dias y horarios"; }
+            td:nth-of-type(4):before { content: "Costo"; }
+            td:nth-of-type(5):before { content: "Habilitada"; }
+            td:nth-of-type(6):before { content: "Categoria"; }
+            td:nth-of-type(7):before { content: "Instructores"; }
+            td:nth-of-type(8):before { content: "Opciones"; }
+        }
+
+    </style>
+{% endblock %}
+{% set active_page = "disciplinas" %}
+
+{% if has_permission("discipline_index") %}
+    {% block title %}Listado de disciplinas{% endblock %}
+
+    {% block content %}
+        <div class="container py-5 justify-content-center"> 
+            <h1 class="text-center fw-semibold mb-4" id="mHeader">Listado de disciplinas</h1>
+            <div class="table table-dark">
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Dias y horarios</th>
+                            <th>Costo</th>
+                            <th>Habilitada</th>
+                            <th>Categoria</th>
+                            <th>Instructores</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for disciplina in pages.items %} 
+                            <tr>
+                                <td>{{ disciplina.id }}</td>
+                                <td>{{ disciplina.nombre_disciplina }} </td>
+                                <td>{{ disciplina.detalle}}</td>
+                                <td>$ {{ disciplina.costo }} </td>
+                                <td>{% if disciplina.habilitada %} Si
+                                    {% else %} No
+                                    {% endif %}
+                                </td>
+                                <td> 
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-especial dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Categorías
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {% for categoria in disciplina.categorias %}
+                                                <li><a class="dropdown-item" href="#">{{categoria.descripcion}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-especial dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Instructores
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {% for instructor in disciplina.instructores %}
+                                                <li><a class="dropdown-item" href="#">{{ instructor.nombre_instructor}} {{ instructor.apellido_instructor}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-xl-center justify-content-start mt-auto">
+                                        {% if has_permission("discipline_update") %}
+                                            <a href="{{ url_for('disciplinas.inscripcion_socio', id = disciplina.id) }}">
+                                                <button type="button" class="btn btn-sm btn-inscribir">Inscribir socio</button>
+                                            </a>
+
+                                            <a href="{{ url_for('disciplinas.editar_disciplina', id = disciplina.id) }}">
+                                                <button type="button" class="btn btn-sm btn-especial">Editar</button>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if has_permission("discipline_destroy") %}
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn  btn-sm btn-borrar" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                                Eliminar
+                                            </button>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h1 class="modal-title fs-5">Confirmación de eliminación</h1>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>¿Está segur@ que desea eliminar la disciplina?</p>
+                                                </div>
+                                            
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <a href="{{ url_for('disciplinas.delete_disciplina', id = disciplina.id) }}">
+                                                        <button type="button" class="btn btn-danger">Eliminar</button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}
+            {% block buttons %}
+                <div class="d-grid gap-4 d-md-flex align-items-center justify-content-md-between mt-auto pt-4 pb-2">
+                    <!--Paginación-->
+                    <div class="d-md-flex justify-content-md-start">
+                        {% include "paginacion.html" %}
+                    </div>
+                    {% if has_permission("discipline_new") %}
+                        <!--Agregar disciplina-->
+                        <a href="{{ url_for('disciplinas.alta_disciplina') }}">
+                            <button type="button" class="btn btn-dark">Agregar disciplina</button>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+{% endif %}

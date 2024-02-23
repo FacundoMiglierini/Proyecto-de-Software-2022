@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/carnet.css') }}">
+{% endblock %}
+
+{% set active_page = "socios" %}
+{% if has_permission("socio_show") %}
+    {% block title %}Carnet {{ carnet.id }}{% endblock %}
+
+    {% block content %}
+        <div class="container-fluid py-5">
+            <h1 class="text-center fw-semibold mb-5">Carnet de socio</h1>
+            <div class="col d-flex justify-content-center">
+                <div class="card mb-3"> 
+                    <h5 class="card-header fw-semibold mb-4 text-center">Club Deportivo de Villa Elisa</h5>
+                    <div class="row g-0 px-4">
+                      <div class="col-md-5 mx-auto d-flex align-items-center">
+                          <div class="container">
+                            <div class="row row-cols-2">
+                                <div class="col-12 pb-4 text-center">
+                                    <img class="responsive-img rounded-circle" src="data:{{image.mimetype}};base64,{{image.data.decode()}}" alt="Imagen de socio">
+                                </div>
+                                <div class="col-12 text-center">
+                                    <span class="fw-semibold">Estado: {% if carnet.estado %}Inactivo{% else %}Activo{% endif %}</span>
+                                </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="col-md-6 d-flex flex-column">
+                        <div class="card-body ms-md-auto text-md-start text-center">
+                            <h5 class="card-title">Socio: {{carnet.nombre}}</h5> 
+                            <p class="card-text">{{carnet.tipo_identificacion}}: {{ carnet.identificacion }}</p>
+                            <p class="card-text">Nro socio: #{{ carnet.id }}</p>
+                            <p class="card-text">Fecha alta: {{ carnet.fecha_alta }}</p>
+                            <img src="data:;base64,{{qr.decode()}}" class="qr " alt="Imagen QR">
+                        </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                <a class="btn btn-dark" href="{{ url_for('socio.download_carnet', socio_id = carnet.id) }}">Descargar</a>
+                <a class="btn btn-dark" href="{{ url_for('socio.index_socios') }}">Volver al listado de socios</a>
+            </div>
+        </div>
+    {% endblock %}
+{% endif %}

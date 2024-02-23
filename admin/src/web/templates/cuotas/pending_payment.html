@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% set active_page = "cuotas" %}
+{% if has_permission("payments_import") %}
+    {% block title %}Comprobante de la cuota{% endblock %}
+
+    {% block content %}
+        <div class="container-fluid py-5">
+            <h1 class="text-center fw-semibold mb-5">Comprobante de pago de cuota {{cuota.id}}</h1>
+            <div class="d-flex justify-content-center">
+                <iframe src="{{path}}" width="70%" height="500" title="Comprobante de pago" ></iframe> <!--src="../../../../public/images/comprobantes/{{file}}"-->
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                <a class="btn btn-success" href="{{ url_for('pagos.accept_or_deny_payment', id_cuota = cuota.id, selected='Accept') }}">Aceptar</a>
+                <a class="btn btn-borrar" href="{{ url_for('pagos.accept_or_deny_payment', id_cuota = cuota.id, selected='Deny') }}">Rechazar</a>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto py-4">
+                <a class="btn btn-dark" href="{{ url_for('pagos.index_pendings') }}">Volver al listado de cuotas pendientes</a>
+            </div>
+        </div>
+    {% endblock %}
+{% endif %}

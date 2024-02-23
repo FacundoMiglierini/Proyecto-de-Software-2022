@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+{% endblock %}
+{% set active_page = "disciplinas" %}
+
+{% block title %} Confirmar inscripcion {% endblock %}
+
+{% if has_permission("discipline_update") %}
+    {% block content %}
+    <div class="container py-5 justify-content-center"> 
+    El socio {{socio.nombre}} {{socio.apellido}} {{socio.tipo_identificacion}} {{socio.identificacion }} se encuentra inscripto en: <br>
+    {% for disciplina in socio.disciplinas %}
+        {{disciplina.nombre_disciplina}}<br>
+    {% endfor %}
+
+    <a href="{{ url_for('disciplinas.inscripcion_socio', id=id) }}">
+        <button type="button" class="btn btn-dark">Inscribir a otro socio en {{disciplina.nombre_disciplina}}</button>
+    <a href="{{ url_for('disciplinas.disciplinas_listado') }}">
+        <button type="button" class="btn btn-secondary">Volver a Disciplinas</button></a>
+    </a></div>
+    {% endblock %} 
+{% endif %}

@@ -1,0 +1,7 @@
+{% macro check_errors(field) %}
+    {% if field.errors %}
+        {% for error in field.errors %}
+            <div class="text-danger mt-1">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
